@@ -1,4 +1,3 @@
-#tool "nuget:?package=xunit.runner.console&version=2.4.0"
 #addin "Cake.Docker&version=0.10.0"
 
 var target = Argument<string>("target", "Default");
