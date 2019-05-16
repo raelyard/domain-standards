@@ -36,7 +36,7 @@ Task("DockerBuild")
     {
         var applicationName = new FilePath(dockerFile).GetDirectory().GetDirectoryName().ToLower();
         Information("Docker Building {0} - subdomain: {1}; application name: {2}", dockerFile, subdomainName, applicationName);
-        DockerBuild(new DockerImageBuildSettings{File = dockerFile, ForceRm = true, Tag = new[]{ $"{subdomainName}.{applicationName}:latest" }}, ".");
+        DockerBuild(new DockerImageBuildSettings{File = dockerFile, ForceRm = true, Tag = new[]{ $"{subdomainName.ToLower()}.{applicationName.ToLower()}:latest" }}, ".");
     }
 });
 
