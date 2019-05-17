@@ -37,12 +37,25 @@ Task("DockerBuild")
     {
         var applicationName = new FilePath(dockerFile).GetDirectory().GetDirectoryName().ToLower();
         Information("Docker Building {0} - subdomain: {1}; application name: {2}", dockerFile, subdomainName, applicationName);
-        DockerBuild(new DockerImageBuildSettings
+
+        var userHomeDirectory = EnvironmentVariable("HOME");
+        var nugetConfigFileSourcePath = $"{userHomeDirectory}/.raelyard/standardconfig/NuGet/NuGet.Config";
+        var nugetConfigFilePath = "NuGet.Config";
+        CopyFileToDirectory(nugetConfigFileSourcePath, ".");
+
+        try
         {
-            File = dockerFile,
-            ForceRm = true,
-            Tag = new[]{ $"{topLevelDomainName.ToLower()}.{subdomainName.ToLower()}.{applicationName.ToLower()}:latest" }
-        }, ".");
+            DockerBuild(new DockerImageBuildSettings
+            {
+                File = dockerFile,
+                ForceRm = true,
+                Tag = new[]{ $"{topLevelDomainName.ToLower()}.{subdomainName.ToLower()}.{applicationName.ToLower()}:latest" }
+            }, ".");
+        }
+        finally
+        {
+            DeleteFile(nugetConfigFilePath);
+        }
     }
 });
 
