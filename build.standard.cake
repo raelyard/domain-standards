@@ -2,6 +2,7 @@
 
 var target = Argument<string>("target", "Default");
 
+var topLevelDomainName = MakeAbsolute(new DirectoryPath("..")).GetDirectoryName();
 var subdomainName = MakeAbsolute(new DirectoryPath(".")).GetDirectoryName();
 var dockerFiles = GetFiles("./**/Dockerfile").Select(file => file.ToString());
 
@@ -36,7 +37,12 @@ Task("DockerBuild")
     {
         var applicationName = new FilePath(dockerFile).GetDirectory().GetDirectoryName().ToLower();
         Information("Docker Building {0} - subdomain: {1}; application name: {2}", dockerFile, subdomainName, applicationName);
-        DockerBuild(new DockerImageBuildSettings{File = dockerFile, ForceRm = true, Tag = new[]{ $"{subdomainName.ToLower()}.{applicationName.ToLower()}:latest" }}, ".");
+        DockerBuild(new DockerImageBuildSettings
+        {
+            File = dockerFile,
+            ForceRm = true,
+            Tag = new[]{ $"{topLevelDomainName.ToLower()}.{subdomainName.ToLower()}.{applicationName.ToLower()}:latest" }
+        }, ".");
     }
 });
 
