@@ -30,7 +30,6 @@ Task("Build")
 
 Task("DockerBuild")
     .Description("Builds all the different parts of the project, including the building of relevant Docker images.")
-    .IsDependentOn("Build")
     .Does(() =>
 {
     foreach(var dockerFile in dockerFiles)
